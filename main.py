@@ -3,23 +3,42 @@ from selenium.webdriver.common.keys import Keys
 import time
 
 PATH = "C:\Program Files (86)\chromedriver.exe"
-driver = webdriver.Chrome(PATH)
+wd = webdriver.Chrome(PATH)
 
-driver.get("https://www.reddit.com/")
+def get_images_from_google(wd, delay, max_images):
+	def scroll_down(wd):
+		wd.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+		time.sleep(delay)
 
+	url = "https://www.google.com/search?q=dogs&sxsrf=AOaemvIqf6FpU0Jq4_1uYXUxeEKp1YLggQ:1635733108946&source=lnms&tbm=isch&sa=X&ved=2ahUKEwi-qJ_XjPbzAhXylWoFHXoBDygQ_AUoAXoECAEQAw&biw=1536&bih=750&dpr=1.25"
+	wd.get(url)
 
-search = driver.find_element_by_name("wallstreetbets")
-search.send_keys("test")
-search.send_keys(Keys.RETURN)
+	image_urls = set()
+	skips = 0
 
+	while len(image_urls) + skips < max_images:
+		scroll_down(wd)
 
-try:
-    main = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.ID, "main"))
-    )
-except:
-    driver.quit()
+		thumbnails = wd.find_elements(By.CLASS_NAME, "Q4LuWd")
 
-print(main.text)
+		for img in thumbnails[len(image_urls) + skips:max_images]:
+			try:
+				img.click()
+				time.sleep(delay)
+			except:
+				continue
+
+			images = wd.find_elements(By.CLASS_NAME, "n3VNCb")
+			for image in images:
+				if image.get_attribute('src') in image_urls:
+					max_images += 1
+					skips += 1
+					break
+
+				if image.get_attribute('src') and 'http' in image.get_attribute('src'):
+					image_urls.add(image.get_attribute('src'))
+					print(f"Found {len(image_urls)}")
+
+	return image_urls
 
 driver.quit()

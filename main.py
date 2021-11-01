@@ -44,4 +44,24 @@ def get_images_from_google(wd, delay, max_images):
 
 	return image_urls
 
-driver.quit()
+	
+def download_image(download_path, url, file_name):
+	try:
+		image_content = requests.get(url).content
+		image_file = io.BytesIO(image_content)
+		image = Image.open(image_file)
+		file_path = download_path + file_name
+
+		with open(file_path, "wb") as f:
+			image.save(f, "JPEG")
+
+		print("Success")
+	except Exception as e:
+		print('FAILED -', e)
+
+urls = get_images_from_google(wd, 1, 6)
+
+for i, url in enumerate(urls):
+	download_image("imgs/", url, str(i) + ".jpg")
+
+wd.quit()

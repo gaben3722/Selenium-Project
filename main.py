@@ -1,5 +1,8 @@
-import selenium
-from selenium.webdriver.common.keys import Keys
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import requests
+import io
+from PIL import Image
 import time
 
 PATH = "C:\Program Files (86)\chromedriver.exe"

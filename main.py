@@ -5,7 +5,7 @@ import io
 from PIL import Image
 import time
 
-PATH = "C:\Program Files (86)\chromedriver.exe"
+PATH = "C:\Users\Bob\Desktop\Selenium-Project\chromedriver.exe"
 wd = webdriver.Chrome(PATH)
 
 def get_images_from_google(wd, delay, max_images):
